@@ -1,0 +1,105 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Photographer {
+  id                 String              @id @default(cuid())
+  name               String
+  email              String              @unique
+  googleCalendarId   String              @default("")
+  isActive           Boolean             @default(true)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  availabilityRules  AvailabilityRule[]
+  availabilityBlocks AvailabilityBlock[]
+  bookings           Booking[]
+}
+
+model Package {
+  id              String    @id @default(cuid())
+  name            String
+  durationMinutes Int
+  description     String?
+  isActive        Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  bookings        Booking[]
+}
+
+model AvailabilityRule {
+  id             String       @id @default(cuid())
+  photographerId String
+  dayOfWeek      Int
+  startTime      String
+  endTime        String
+  maxBookings    Int          @default(4)
+  bufferMinutes  Int          @default(15)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  photographer   Photographer @relation(fields: [photographerId], references: [id], onDelete: Cascade)
+}
+
+model AvailabilityBlock {
+  id             String       @id @default(cuid())
+  photographerId String
+  startAt        DateTime
+  endAt          DateTime
+  reason         String?
+  createdAt      DateTime     @default(now())
+  photographer   Photographer @relation(fields: [photographerId], references: [id], onDelete: Cascade)
+}
+
+model Booking {
+  id              String        @id @default(cuid())
+  photographerId  String
+  packageId       String
+  status          BookingStatus @default(PENDING)
+  startAt         DateTime
+  endAt           DateTime
+  propertyAddress String
+  propertyLat     Float?
+  propertyLng     Float?
+  agentName       String
+  agentEmail      String
+  sellerName      String
+  sellerEmail     String
+  sellerPhone     String
+  adminNotes      String?
+  googleEventId   String?
+  ghlContactId    String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  photographer    Photographer  @relation(fields: [photographerId], references: [id])
+  package         Package       @relation(fields: [packageId], references: [id])
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  RESCHEDULED
+}
+
+model TravelTimeCache {
+  id            String   @id @default(cuid())
+  originAddress String
+  destAddress   String
+  travelSeconds Int
+  cachedAt      DateTime @default(now())
+
+  @@unique([originAddress, destAddress])
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
