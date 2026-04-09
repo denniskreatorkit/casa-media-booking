@@ -267,14 +267,15 @@ describe("generateSlots — edge cases", () => {
     ).rejects.toThrow("Package nonexistent-pkg not found");
   });
 
-  it("travelScore is 0 (stub phase — Maps API not wired yet)", async () => {
+  it("travelScore is 0 when photographer origin address is blank", async () => {
+    // generate.ts passes "" as origin, so getTravelSeconds returns 0 (no API call made)
     const dayOfWeek = nextWeekday(4).getDay();
     await seedPhotographer({ id: "phot-travel", dayOfWeek });
     const pkg = await seedPackage({ id: "pkg-travel" });
 
     const slots = await generateSlots({
       packageId: pkg.id,
-      address: "Anywhere",
+      address: "Laan van Poot 1, Den Haag",
       windowDays: 7,
     });
 
