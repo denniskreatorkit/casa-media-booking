@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { sendBookingConfirmationEmails } from "@/lib/ghl-email";
 
 export async function POST(request: NextRequest) {
   try {
@@ -76,6 +77,23 @@ export async function POST(request: NextRequest) {
       },
       include: { photographer: true, package: true },
     });
+
+    // Fire GHL confirmation emails — non-blocking; errors are logged, not thrown
+    sendBookingConfirmationEmails({
+      bookingId: confirmed.id,
+      propertyAddress: confirmed.propertyAddress,
+      packageName: confirmed.package.name,
+      durationMinutes: confirmed.package.durationMinutes,
+      startAt: confirmed.startAt,
+      endAt: confirmed.endAt,
+      agentName: confirmed.agentName,
+      agentEmail: confirmed.agentEmail,
+      sellerName: confirmed.sellerName,
+      sellerEmail: confirmed.sellerEmail,
+      sellerPhone: confirmed.sellerPhone,
+      photographerName: confirmed.photographer!.name,
+      photographerEmail: confirmed.photographer!.email,
+    }).catch((err) => console.error("[GHL] Unexpected error in sendBookingConfirmationEmails:", err));
 
     return NextResponse.json({ booking: confirmed });
   } catch (err) {
