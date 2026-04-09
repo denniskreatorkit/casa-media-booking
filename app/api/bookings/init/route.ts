@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
     // The real slot is confirmed in /api/bookings/confirm
     const draft = await prisma.booking.create({
       data: {
-        photographerId: "DRAFT", // placeholder — assigned on confirm
+        photographerId: null, // null until slot is confirmed
         packageId,
         status: "PENDING",
         startAt: new Date(0),

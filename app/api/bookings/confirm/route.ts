@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (draft.photographerId !== "DRAFT") {
+    if (draft.photographerId !== null) {
       return NextResponse.json(
         { error: "Booking already confirmed" },
         { status: 409 }

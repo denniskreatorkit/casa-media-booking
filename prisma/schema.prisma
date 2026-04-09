@@ -4,7 +4,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model Photographer {
@@ -56,7 +55,7 @@ model AvailabilityBlock {
 
 model Booking {
   id              String        @id @default(cuid())
-  photographerId  String
+  photographerId  String?
   packageId       String
   status          BookingStatus @default(PENDING)
   startAt         DateTime
@@ -74,7 +73,7 @@ model Booking {
   ghlContactId    String?
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
-  photographer    Photographer  @relation(fields: [photographerId], references: [id])
+  photographer    Photographer? @relation(fields: [photographerId], references: [id])
   package         Package       @relation(fields: [packageId], references: [id])
 }
 
