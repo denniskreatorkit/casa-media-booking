@@ -40,8 +40,8 @@ export default async function BookingsPage({
           agentEmail: b.agentEmail,
           sellerName: b.sellerName,
           propertyAddress: b.propertyAddress,
-          photographerName: b.photographer.name,
-          photographerId: b.photographer.id,
+          photographerName: b.photographer?.name ?? "",
+          photographerId: b.photographer?.id ?? "",
           packageName: b.package.name,
         }))}
         photographers={photographers}

@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/db";
 import IntakeForm from "./IntakeForm";
 
+export const dynamic = "force-dynamic";
+
 export default async function BookingPage() {
   const packages = await prisma.package.findMany({
     where: { isActive: true },

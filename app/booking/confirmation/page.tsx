@@ -40,7 +40,7 @@ export default async function ConfirmationPage({
               })}
             </Row>
             <Row label="Package">{booking.package.name}</Row>
-            <Row label="Photographer">{booking.photographer.name}</Row>
+            <Row label="Photographer">{booking.photographer?.name ?? ""}</Row>
             <Row label="Property">{booking.propertyAddress}</Row>
             <Row label="Agent">
               {booking.agentName} ({booking.agentEmail})

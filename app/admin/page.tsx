@@ -74,7 +74,7 @@ export default async function AdminDashboard() {
                   {booking.propertyAddress}
                 </td>
                 <td className="px-4 py-3">{booking.package.name}</td>
-                <td className="px-4 py-3">{booking.photographer.name}</td>
+                <td className="px-4 py-3">{booking.photographer?.name ?? ""}</td>
                 <td className="px-4 py-3">
                   <StatusBadge status={booking.status} />
                 </td>
